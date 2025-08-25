@@ -53,4 +53,4 @@ note-app-backend/
     PORT=5000```
 
 4. **Jalankan Server**
-    ```bash node src/app.js
+    ```bash node src/app.js```
