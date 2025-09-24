@@ -18,18 +18,22 @@ Note App Backend adalah RESTful API untuk mengelola catatan (notes) dengan fitur
 
 ---
 ## Struktur Project
-note-app-backend/
-│-- src/
-│ │-- controllers/ # Logic request/response
-│ │-- models/ # Query ke database
-│ │-- routes/ # Endpoint API
-│ │-- config/ # Koneksi DB
-│ │-- app.js # Inisialisasi Express
-│
-│-- .env 
-│-- .gitignore
-│-- package.json
-│-- README.md
+```bash 
+    note-app-backend/
+    │-- src/
+    │ │-- controllers/ # Logic request/response
+    │ │-- models/ # Query ke database
+    | |-- migrations/ # Migrasi ke db
+    │ │-- routes/ # Endpoint API
+    │ │-- config/ # Koneksi DB
+    │ │-- app.js # Inisialisasi Express
+    │
+    │-- .env 
+    │-- .gitignore
+    │-- package.json
+    │-- README.md
+```
+
 
 ---
 
@@ -175,7 +179,7 @@ Ya.. banyak dokumentasinya dan mudah di pelajari.
             npm install --save-dev sequelize-auto
         ```
         atau juga boleh install mysql secara global 
-        
+
         ```bash 
             mysql install -g mysqk2 
         ```
