@@ -68,7 +68,7 @@ Singkatnya  ORM itu membuat kita males untuk membuat perintah sql.
 Anggapan kita seorang bayi dan kita memiliki seorang asisten yang nantinya kita tinggal suruh assiten kita mengambil barang yang kita inginkan 
 ORM singkatnya seperti itu kita menggunakan printah yang ada. 
 
-### Kenapa menggunakan ORM ? 
+### Kenapa mengguna kan ORM ? 
 Sudah jelas untuk mempermudahkan kita berkomunikasi dengan db, kita tidak perlu lagi menulis printah sql "ribet", memudahkan kita juga untuk migrasi db, jadi tidak perlu lagi untuk export dan import db kalian. 
 
 ### Kenapa makek sequelize ? 
@@ -122,13 +122,13 @@ Ya.. banyak dokumentasinya dan mudah di pelajari.
         ```
         ini biasana auto terbuat. 
         ini versi dbnya dimana ada versi dev, test, dan prod 
-        ***development*** 
+        **development** 
          - ini digunakan pada saat dev (belajar)
          - kita bisa otak atik tanpa takut eror
-        ***test***
+        **test**
          - ini keknya untuk testing apakah sudah siap untuk dikasi ke orang 
          - di versi ini masih aman untuk coba coba lagi. 
-        ***production***
+        **production**
          - di versi ini sudah di pakai orang
          - jadi harus berhati hati, supaya tidak terjadi eror 
 
@@ -161,6 +161,7 @@ Ya.. banyak dokumentasinya dan mudah di pelajari.
         ```bash 
             npx sequelize-cli db:migrate
         ```
+        
     **Nah Kalo Db saya udah ada Gimana ?** 
         tenang kalo Db dan table udah ada kita menjalankan printah ini 
         ```bash 

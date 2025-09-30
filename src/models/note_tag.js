@@ -22,7 +22,7 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'note_tag',
-    timestamps: false,
+    timestamps: true,
     indexes: [
       {
         name: "PRIMARY",

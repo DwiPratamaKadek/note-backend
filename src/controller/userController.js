@@ -1,10 +1,15 @@
-const UserModel = require("../model/userModel");
+// const UserModel = require("../model/userModel");
+
+const { user } = require("../models")
 
 const userController = {
   getAllUser: async (req, res) => {
     try {
-      const user = await UserModel.getAll();
-      res.status(200).json(user);
+      const data = await user.findAll();
+      if(!data) {
+        return res.status(404).json({ message: "user not found" });
+      }
+      res.status(200).json(data);
     } catch (error) {
       console.error("Error getting all user:", error);
       res.status(500).json({ message: "Error getting all user" });
@@ -15,14 +20,14 @@ const userController = {
     const { username, email, password } =
       req.body;
     try {
-      const userId = await UserModel.create(
+      const userData = await user.create({
         username,
         email, 
         password
-      );
+      });
       res
         .status(201)
-        .json({ message: "User created successfully", userId });
+        .json({ message: "User created successfully", userData });
     } catch (error) {
       console.error("Error creating user:", error);
       res.status(500).json({ message: "Error creating user" });
@@ -32,11 +37,11 @@ const userController = {
   getUserById: async (req, res) => {
     const { id } = req.params;
     try {
-      const user = await UserModel.findById(id);
-      if (!user) {
+      const userData = await user.findByPk(id);
+      if ( !userData ) {
         return res.status(404).json({ message: "user not found" });
       }
-      res.status(200).json(user);
+      res.status(200).json(userData);
     } catch (error) {
       console.error("Error getting user by ID:", error);
       res.status(500).json({ message: "Error getting user" });
@@ -47,12 +52,11 @@ const userController = {
     const { id } = req.params;
     const { username, email, password } = req.body;
     try {
-      const affectedRows = await UserModel.update(
+      const affectedRows = await user.update({
         username, 
         email, 
         password,
-        id
-      );
+       }, { where : { id_user:id } });
       if (affectedRows === 0) {
         return res
           .status(404)
@@ -68,7 +72,7 @@ const userController = {
   deleteUser: async (req, res) => {
     const { id } = req.params;
     try {
-      const affectedRows = await UserModel.delete(id);
+      const affectedRows = await user.destroy({where : {id_user:id}});
       if (affectedRows === 0) {
         return res.status(404).json({ message: "User not found" });
       }

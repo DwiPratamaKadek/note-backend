@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('user', {
+  const user = sequelize.define('user', {
     id_user: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
@@ -22,7 +22,7 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'user',
-    timestamps: false,
+    timestamps: true,
     indexes: [
       {
         name: "PRIMARY",
@@ -34,4 +34,11 @@ module.exports = function(sequelize, DataTypes) {
       },
     ]
   });
+
+  user.associate = (models) => {
+    user.hasMany(models.note,{foreignKey: 'id_user'})
+  }
+
+
+  return user
 };

@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors')
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Ini bagian routernya
 const noteRoutes = require ('./routes/noteRoutes')
@@ -24,7 +26,7 @@ app.get('/', (req, res) => {
 });
 //HElo
 const PORT = process.env.PORT || 3002;
-app.  listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Access API at http://localhost:${PORT}/api`);
 });

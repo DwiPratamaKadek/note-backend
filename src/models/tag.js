@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('tag', {
+  const tag =  sequelize.define('tag', {
     id_tag: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
@@ -14,7 +14,7 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     sequelize,
     tableName: 'tag',
-    timestamps: false,
+    timestamps: true,
     indexes: [
       {
         name: "PRIMARY",
@@ -26,4 +26,14 @@ module.exports = function(sequelize, DataTypes) {
       },
     ]
   });
+
+  tag.associate = (models) => {
+    tag.belongsToMany(models.note, {
+      through: models.note_tag,
+      foreignKey: 'id_tag',
+      otherKey: 'id_note'
+    })
+  }
+
+  return tag
 };

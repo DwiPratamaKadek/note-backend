@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('priority', {
+  const priority =  sequelize.define('priority', {
     id_priority: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
@@ -19,10 +19,12 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(100),
       allowNull: true
     }
-  }, {
+  }, 
+    //index untuk mempercepat 
+  {
     sequelize,
     tableName: 'priority',
-    timestamps: false,
+    timestamps: true,
     indexes: [
       {
         name: "PRIMARY",
@@ -34,4 +36,11 @@ module.exports = function(sequelize, DataTypes) {
       },
     ]
   });
+
+  priority.associate = (models) => {
+    priority.hasMany(models.note, {foreignKey: 'id_note'})
+  }
+
+  return priority
+
 };

@@ -1,10 +1,14 @@
-const PriorityModel = require("../model/priorityModel");
+const { where } = require("sequelize");
+const { priority } = require("../models");
 
 const priorityController = {
   getAllPriority: async (req, res) => {
     try {
-      const note = await PriorityModel.getAll();
-      res.status(200).json(note);
+      const data = await priority.findAll();
+      if( data === 0 ) {
+        return res.status(404).json({ message: "Priority not found" });
+      }
+      res.status(200).json(data);
     } catch (error) {
       console.error("Error getting all user:", error);
       res.status(500).json({ message: "Error getting all user" });
@@ -12,17 +16,14 @@ const priorityController = {
   },
 
   createPriority: async (req, res) => {
-    const { name, level, color } =
-      req.body;
+    const { name, level, color } = req.body;
     try {
-      const priorityId = await PriorityModel.create(
+      const dataPrio = await priority.create({
         name,
         level, 
         color
-      );
-      res
-        .status(201)
-        .json({ message: "Priority created successfully", priorityId });
+      });
+      res.status(201).json({ message: "Priority created successfully", dataPrio });
     } catch (error) {
       console.error("Error creating priority:", error);
       res.status(500).json({ message: "Error creating priority" });
@@ -32,14 +33,14 @@ const priorityController = {
   getPriorityById: async (req, res) => {
     const { id } = req.params;
     try {
-      const priority = await PriorityModel.findById(id);
-      if (!priority) {
+      const dataPrio = await priority.findByPk(id);
+      if (!dataPrio ) {
         return res.status(404).json({ message: "priority not found" });
       }
-      res.status(200).json(note);
+      res.status(200).json(dataPrio);
     } catch (error) {
       console.error("Error getting priority by ID:", error);
-      res.status(500).json({ message: "Error getting priority" });
+      res.status(500).json({ message: "Error getting priority" });  
     }
   },
 
@@ -47,16 +48,15 @@ const priorityController = {
     const { id } = req.params;
     const { name, level, color } = req.body;
     try {
-      const affectedRows = await PriorityModel.update(
+      const affectedRows = await priority.update({
         name, 
         level,
         color,
-        id
-      );
+      }, {where : { id_priority : id} });
       if (affectedRows === 0) {
         return res
           .status(404)
-          .json({ message: "Priority not found or no changes made" });
+          .json({ message: "Priority not found or no changes made", dataPrio });
       }
       res.status(200).json({ message: "Priority updated successfully" });
     } catch (error) {
@@ -68,7 +68,7 @@ const priorityController = {
   deletePriority: async (req, res) => {
     const { id } = req.params;
     try {
-      const affectedRows = await PriorityModel.delete(id);
+      const affectedRows = await priority.destroy({where : { id_priority : id}});
       if (affectedRows === 0) {
         return res.status(404).json({ message: "Priority not found" });
       }

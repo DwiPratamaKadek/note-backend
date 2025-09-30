@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('note', {
+  const note = sequelize.define('note', {
     id_note: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
@@ -19,13 +19,16 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: true
     },
-    id_user: {
+    // Fk 
+    id_user: {  
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: 'user',
         key: 'id_user'
-      }
+      },
+      onUpdate : 'CASCADE',
+      onDelete : 'CASCADE'
     },
     id_priority: {
       type: DataTypes.INTEGER,
@@ -33,9 +36,12 @@ module.exports = function(sequelize, DataTypes) {
       references: {
         model: 'priority',
         key: 'id_priority'
-      }
-    }
-  }, {
+      },
+      onUpdate : 'CASCADE',
+      onDelete : 'CASCADE'
+    },
+    
+  },{ // index untuk membatu cepat 
     sequelize,
     tableName: 'note',
     timestamps: true,
@@ -64,4 +70,18 @@ module.exports = function(sequelize, DataTypes) {
       },
     ]
   });
+
+  note.associate = (models) => {
+    note.belongsTo(models.user, {foreignKey: 'id_user'})
+    note.belongsTo(models.priority, {foreignKey: 'id_priority'})
+    note.belongsToMany(models.tag, {
+      through: models.note_tag,
+      foreignKey: 'id_note',
+      otherKey: 'id_tag'
+    })
+  }
+
+  return note
+  
+
 };
