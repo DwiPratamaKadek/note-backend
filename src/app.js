@@ -1,7 +1,11 @@
-require('dotenv').config();
+const dotenv = require('dotenv')
+dotenv.config({path : '.env'})
+dotenv.config({path : '.envToken'})
+  
 const express = require('express');
 const cors = require('cors')
 const app = express();
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -28,5 +32,5 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 3002;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`Access API at http://localhost:${PORT}/api`);
+  console.log(`Access API at http://localhost:${PORT}`);
 });

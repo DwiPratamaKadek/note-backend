@@ -1,8 +1,14 @@
 // const UserModel = require("../model/userModel");
 
-const { user } = require("../models")
+const { where, Op } = require("sequelize");
+const { user } = require("../models");
+const bcrypt = require("bcrypt");
+const { generateAccessToken, generateRefreshToken } = require("../utils/tokenUtils")
+
+
 
 const userController = {
+  
   getAllUser: async (req, res) => {
     try {
       const data = await user.findAll();
@@ -16,7 +22,7 @@ const userController = {
     }
   },
 
-  createUser: async (req, res) => {
+  register: async (req, res) => {
     const { username, email, password } =
       req.body;
     try {
@@ -82,6 +88,52 @@ const userController = {
       res.status(500).json({ message: "Error deleting user" });
     }
   },
+
+  login: async (req, res ) => {
+    const { emailOrUsername, password } = req.body
+    
+    try {
+        // cari email ato usernamenya 
+        const userData = await user.findOne({ 
+          where : {[Op.or] : [{email : emailOrUsername}, {username: emailOrUsername}]}
+        })
+    
+        if (!userData) return res.status(401).json({message : "User Not Found grr"})
+        
+        console.log("Password dari req.body:", password);
+        
+        //validasi passnya
+        const isMatch = await bcrypt.compare(password, userData.password)
+        if(!isMatch) return res.status(401).json({message : "Invalid Password grr"})
+          
+        // kalo valid buat access and refresh grr 
+        const payload = {id_user : userData.id_user, email: userData.email}
+        console.log("ACCESS_TOKEN_SECRET:", process.env.ACCESS_TOKEN_SECRET);
+        const accessToken = generateAccessToken(payload)
+        const refreshToken = generateRefreshToken(payload)
+      
+        res.cookie("refreshToken", refreshToken, {
+          httpOnly : true,
+          secure : true, 
+          sameSite : "strict" 
+        })
+    
+        res.status(200).json({message : "Login lo berhasil ", accessToken, refreshToken})
+    }catch(error) { 
+      console.log(error)
+      res.status(500).json({message : "Internal Error Njay"})
+    }
+    
+    
+
+  },
+
+  logout: async (req, res) => {
+    const refreshToken = res.cookie.refreshToken
+    refreshToken = refreshToken.filter(rt => rt !== refreshToken)
+    res.clearCookie("refreshToken"), 
+    res.sendStatus(204).json({message : "You Logout grr"})
+  }
 
 };
 

@@ -51,14 +51,27 @@ const noteController = {
     }
   },
 
+  getNotebyUser: async (req, res) => {
+    try {
+      console.log("user yang login", req.user)
+      const userNote = await note.findAll({
+        where: { id_user : req.user.id_user}
+      })
+      res.status(200).json({message : "neh note lo", userNote})
+    }catch(error) {
+      console.log("error ni bang", error)
+      res.status(500).json({message : "lo tau gak ni internal error", error})
+    }
+  },
+
   createNote: async (req, res) => {
-    const { title, content, deadline, id_user, id_priority } = req.body
+    const { title, content, deadline, id_priority } = req.body
     try {
       const newdata = await note.create({
         title, 
         content, 
         deadline, 
-        id_user, 
+        id_user: req.user.id_user, 
         id_priority
       })
       res.status(200).json({message : "Note successfully created", newdata})
