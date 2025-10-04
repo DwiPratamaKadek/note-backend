@@ -20,6 +20,10 @@ module.exports = function(sequelize, DataTypes) {
     password: {
       type: DataTypes.STRING(255),
       allowNull: false
+    },
+    token: {
+      type: DataTypes.TEXT(255),
+      allowNull: true
     }
   }, {
     hooks : { 

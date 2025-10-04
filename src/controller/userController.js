@@ -1,6 +1,6 @@
 // const UserModel = require("../model/userModel");
 
-const { where, Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const { user } = require("../models");
 const bcrypt = require("bcrypt");
 const { generateAccessToken, generateRefreshToken } = require("../utils/tokenUtils")
@@ -23,8 +23,7 @@ const userController = {
   },
 
   register: async (req, res) => {
-    const { username, email, password } =
-      req.body;
+    const { username, email, password } =req.body;
     try {
       const userData = await user.create({
         username,
@@ -62,6 +61,8 @@ const userController = {
         username, 
         email, 
         password,
+        token, 
+
        }, { where : { id_user:id } });
       if (affectedRows === 0) {
         return res
@@ -111,10 +112,16 @@ const userController = {
         console.log("ACCESS_TOKEN_SECRET:", process.env.ACCESS_TOKEN_SECRET);
         const accessToken = generateAccessToken(payload)
         const refreshToken = generateRefreshToken(payload)
-      
+
+        //Simpan refresh token ke DB lo 
+        await user.update(
+          { token : refreshToken },
+          { where : { id_user :userData.id_user}}
+        )
+        //Simpan access token ke cookie 
         res.cookie("refreshToken", refreshToken, {
           httpOnly : true,
-          secure : true, 
+          secure : false, 
           sameSite : "strict" 
         })
     
@@ -123,14 +130,18 @@ const userController = {
       console.log(error)
       res.status(500).json({message : "Internal Error Njay"})
     }
-    
-    
 
   },
 
   logout: async (req, res) => {
-    const refreshToken = res.cookie.refreshToken
-    refreshToken = refreshToken.filter(rt => rt !== refreshToken)
+    const refreshToken = req.cookie.refreshToken
+    if(!refreshToken) return res.status(204)
+    
+    const userData = await user.findOne({where : {token : refreshToken}})
+    if(!userData) return res.status(204)
+
+    await user.update({token : null}, {where : {id_user : userData.id_user}})
+
     res.clearCookie("refreshToken"), 
     res.sendStatus(204).json({message : "You Logout grr"})
   }

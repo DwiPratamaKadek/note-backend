@@ -1,3 +1,5 @@
+
+const cookieParser = require('cookie-parser')
 const dotenv = require('dotenv')
 dotenv.config({path : '.env'})
 dotenv.config({path : '.envToken'})
@@ -8,6 +10,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser())
 
 // Ini bagian routernya
 const noteRoutes = require ('./routes/noteRoutes')
